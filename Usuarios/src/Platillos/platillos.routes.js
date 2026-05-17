@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {
     getPlatillos
-    
+
 } from './platillos.controller.js';
 
 

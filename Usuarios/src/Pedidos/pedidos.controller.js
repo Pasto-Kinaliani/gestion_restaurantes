@@ -25,13 +25,14 @@ export const createPedido = async (req, res) => {
             detallesConPrecio.push({
                 platillo: item.platillo,
                 cantidad: item.cantidad,
+                nombre: platilloDB.nombre,
                 subtotal: subtotal
             });
         }
 
         const nuevoPedido = new Pedido({
             usuario,
-            sucursal, 
+            sucursal,
             detalles: detallesConPrecio,
             total: totalAcumulado,
             status: 'PENDIENTE'

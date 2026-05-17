@@ -4,7 +4,7 @@ import Platillo from '../Platillos/platillos.model.js';
 // Crear pedido
 export const createPedido = async (req, res) => {
     try {
-        const { usuario, sucursal, detalles } = req.body;
+        const { usuario, detalles, sucursal } = req.body;
         let totalAcumulado = 0;
         const detallesConPrecio = [];
 
@@ -67,7 +67,7 @@ export const cancelPedido = async (req, res) => {
     }
 };
 
-export const completadoPedido = async (req, res) => {
+export const completPedido = async (req, res) => {
     try {
         const { id } = req.params;
         const pedido = await Pedido.findByIdAndUpdate(

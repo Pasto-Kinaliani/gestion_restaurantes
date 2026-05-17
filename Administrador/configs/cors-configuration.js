@@ -1,8 +1,8 @@
-const corsOptions = {
-    origin: true,
+export const corsOptions = {
+    origin: 'http://localhost:5173', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], 
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
-    methods: "GET, POST, PUT, DELETE",
-    allowedHeaders: "Content-Type, Authorization"
-}
-
-export { corsOptions }
+    preflightContinue: false,
+    optionsSuccessStatus: 204
+};

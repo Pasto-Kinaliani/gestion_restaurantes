@@ -4,9 +4,13 @@ import { cloudinary } from '../../middlewares/file-uploader.js';
 // Obtener todos los platillos con paginación y filtros
 export const getPlatillos = async (req, res) => {
   try {
-    const { page = 1, limit = 10, isActive = true } = req.query;
+    const { page = 1, limit = 10, isActive } = req.query;
 
-    const filter = { isActive };
+    let filter = {};
+
+    if (isActive !== undefined) {
+      filter.isActive = isActive === 'true';
+    }
 
     const options = {
       page: parseInt(page),
@@ -80,7 +84,7 @@ export const createPlatillo = async (req, res) => {
       platilloData.photo = `${relativePath}.${extension}`;
     } else {
       // Si no se envía archivo, usar imagen por defecto
-      platilloData.photo = 'fields/pasto_kinaliani_e1j0l2';
+      platilloData.photo = 'platillos/plato_kinaliani_nyvxo5';
     }
 
     const platillo = new Platillos(platilloData);

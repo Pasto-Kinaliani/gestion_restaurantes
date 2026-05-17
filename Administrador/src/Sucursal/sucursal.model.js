@@ -31,14 +31,18 @@ const sucursalSchema = new mongoose.Schema({
             required: [true, 'La hora de cierre es obligatoria'],
         }
     },
+    photo: {
+        type: String,
+        default: 'sucursales/plato_kinaliani_nyvxo5',
+    },
     isActive: {
         type: Boolean,
         default: true,
     },
 },
-{
-    timestamps: true
-});
+    {
+        timestamps: true
+    });
 
 sucursalSchema.index({ nombre: 1 }, { unique: true });
 sucursalSchema.index({ isActive: 1, nombre: 1 });

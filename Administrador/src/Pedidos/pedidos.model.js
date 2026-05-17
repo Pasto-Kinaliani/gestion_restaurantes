@@ -1,6 +1,6 @@
 'use strict';
 
-import mongoose, {mongo} from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 const pedidoSchema = new mongoose.Schema({
     usuario: {
@@ -8,7 +8,7 @@ const pedidoSchema = new mongoose.Schema({
         ref: 'Usuario',
         required: true
     },
-    sucursal:{
+    sucursal: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Sucursales',
         required: true
@@ -18,6 +18,10 @@ const pedidoSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Platillo',
             required: true
+        },
+        nombre: {
+            type: String,
+            required: false
         },
         cantidad: {
             type: Number,

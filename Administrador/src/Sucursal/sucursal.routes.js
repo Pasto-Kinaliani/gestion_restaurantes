@@ -42,5 +42,4 @@ router.put(
 router.put('/:id/activar', validateSucursalStatusChange, changeSucursalStatus);
 router.put('/:id/desactivar', validateSucursalStatusChange, changeSucursalStatus);
 
-
 export default router;

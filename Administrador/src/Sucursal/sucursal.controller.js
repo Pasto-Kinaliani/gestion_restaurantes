@@ -125,10 +125,10 @@ export const createSucursal = async (req, res) => {
       const filename = req.file.filename;
       const relativePath = filename.substring(filename.indexOf('sucursales/'));
 
-      sucursalData.imagen = `${relativePath}.${extension}`;
+      sucursalData.photo = `${relativePath}.${extension}`;
     } else {
       // Si no se envía archivo, usar imagen por defecto
-      sucursalData.imagen = 'sucursales/default.png';
+      sucursalData.photo = 'sucursales/plato_kinaliani_nyvxo5';
     }
 
     const sucursal = new Sucursales(sucursalData);

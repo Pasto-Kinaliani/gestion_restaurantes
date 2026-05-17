@@ -30,6 +30,10 @@ const platillosSchema = new mongoose.Schema({
         maxlength: [50, 'La categoría no puede tener mas 50 caracteres'],
         trim: true,
     },
+    photo: {
+        type: String,
+        default: 'platillos/plato_kinaliani_nyvxo5',
+    },
     isActive: {
         type: Boolean,
         default: true,

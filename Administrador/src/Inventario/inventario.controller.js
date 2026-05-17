@@ -1,4 +1,4 @@
-import Inventario from './inventario.Model.js';
+import Inventario from './inventario.model.js';
 
 // Obtener todo el inventario con paginación y filtros
 export const getInventarios = async (req, res) => {
@@ -114,12 +114,13 @@ export const updateInventario = async (req, res) => {
 export const changeInventarioStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const estado = req.url.includes('/activar');
-    const action = estado ? 'activado' : 'desactivado';
+    const isActivar = req.url.includes('/activar');
+    const action = isActivar ? 'activado' : 'desactivado';
+    const nuevoEstado = isActivar ? 'disponible' : 'agotado';
 
     const inventario = await Inventario.findByIdAndUpdate(
       id,
-      { estado },
+      { estado: nuevoEstado },
       { new: true }
     );
 

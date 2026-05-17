@@ -41,7 +41,7 @@ export const cancelPedidoValidator = [
     checkValidators
 ];
 
-export const completadoPedidoValidator = [
+export const completPedidoValidator = [
     param('id')
         .isMongoId()
         .withMessage('ID debe ser un ObjectId válido'),

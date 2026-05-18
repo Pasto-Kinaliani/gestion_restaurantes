@@ -1,5 +1,6 @@
 import Pedido from './pedidos.model.js';
 import Platillo from '../Platillos/platillos.model.js';
+import Venta from '../Ventas/ventas.model.js';
 
 // Crear pedido
 export const createPedido = async (req, res) => {
@@ -70,14 +71,56 @@ export const cancelPedido = async (req, res) => {
 export const completPedido = async (req, res) => {
     try {
         const { id } = req.params;
-        const pedido = await Pedido.findByIdAndUpdate(
-            id,
-            { status: 'COMPLETADO' },
-            { new: true }
-        );
-        res.status(200).json({ success: true, message: 'Pedido completado', pedido });
+
+        const pedido = await Pedido.findById(id);
+
+        if (!pedido) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Pedido no encontrado' 
+            });
+        }
+
+        if (pedido.status === 'COMPLETADO') {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'El pedido ya había sido completado anteriormente' 
+            });
+        }
+
+        if (pedido.status === 'CANCELADO') {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'No se puede completar un pedido que fue cancelado' 
+            });
+        }
+
+        const nuevaVenta = new Venta({
+            pedido: pedido._id,
+            total: pedido.total, 
+            metodoPago: pedido.metodoPago
+        });
+        
+        await nuevaVenta.save();
+
+        pedido.status = 'COMPLETADO';
+        await pedido.save();
+
+        res.status(200).json({ 
+            success: true, 
+            message: 'Pedido completado y venta registrada en el sistema de forma automática', 
+            pedido,
+            venta: nuevaVenta 
+        });
+
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Error al completar', error });
+        console.error("Error en completPedido:", error);
+        
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error interno al procesar el cierre del pedido', 
+            error: error.message 
+        });
     }
 };
 
@@ -184,3 +227,28 @@ export const getPedidosByStatus = async (req, res) => {
         });
     }
 };
+
+// Obtener pedidos por usuario
+export const getPedidosByUsuario = async (req, res) => {
+    try {
+        const { usuarioId } = req.params;
+
+        const pedidos = await Pedido.find({ usuario: usuarioId })
+            .populate('usuario', 'name surname email')
+            .populate('sucursal', 'nombre direccion');
+
+        res.status(200).json({
+            success: true,
+            total: pedidos.length,
+            pedidos
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener pedidos por usuario',
+            error: error.message
+        });
+    }
+};
+

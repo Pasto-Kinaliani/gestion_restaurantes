@@ -6,7 +6,8 @@ import {
     getPedidoById,
     completPedido,
     getPedidosBySucursal,
-    getPedidosByStatus
+    getPedidosByStatus,
+    getPedidosByUsuario
 } from './pedidos.controller.js';
 
 import {
@@ -33,5 +34,5 @@ router.put('/completPedido/:id', completPedidoValidator, completPedido);
 // GET
 router.get('/status/:status', getPedidosByStatusValidator, getPedidosByStatus);
 router.get('/sucursal/:sucursalId', getPedidosBySucursal);
-
+router.get('/usuario/:usuarioId', getPedidosByUsuario);
 export default router;

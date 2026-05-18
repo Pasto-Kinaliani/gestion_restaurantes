@@ -4,7 +4,7 @@ import Pedido from '../Pedidos/pedidos.model.js';
 export const getVentasBySucursalYMes = async (req, res) => {
     try {
         const { idSucursal } = req.params;
-        const { mes, anio } = req.query; // Ejemplo: /.../idSucursal?mes=3&anio=2026
+        const { mes, anio } = req.query;
 
         if (!mes || !anio) {
             return res.status(400).json({ success: false, message: 'El mes y el año son obligatorios en la query' });

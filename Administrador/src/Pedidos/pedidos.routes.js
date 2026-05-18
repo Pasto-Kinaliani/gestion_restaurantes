@@ -5,14 +5,16 @@ import {
     getPedidosPendientes,
     getPedidoById,
     completPedido,
-    getPedidosBySucursal
+    getPedidosBySucursal,
+    getPedidosByStatus
 } from './pedidos.controller.js';
 
 import {
     createPedidoValidator,
     getPedidoByIdValidator,
     cancelPedidoValidator,
-    completPedidoValidator
+    completPedidoValidator,
+    getPedidosByStatusValidator
 } from '../../middlewares/pedidos-validator.js';
 
 const router = Router();

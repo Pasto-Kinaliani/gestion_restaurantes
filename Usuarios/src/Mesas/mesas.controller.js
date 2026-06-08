@@ -3,12 +3,13 @@ import Mesa from './mesas.model.js';
 export const getMesasBySucursal = async (req, res) => {
     try {
         const { idSucursal } = req.params;
-        // Solo mostramos mesas activas y disponibles para el cliente
+        
+        // AGREGA EL .populate AQUÍ
         const mesas = await Mesa.find({ 
             sucursal: idSucursal, 
             status: true, 
             isAvailable: true 
-        });
+        }).populate('sucursal', 'nombre direccion'); 
 
         res.status(200).json({
             success: true,

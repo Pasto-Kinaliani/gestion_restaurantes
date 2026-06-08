@@ -2,21 +2,17 @@ import Usuario from './usuarios.model.js';
 
 export const getMyProfile = async (req, res) => {
     try {
-        const { id } = req.body; 
-        
-        if (!id) {
-            return res.status(400).json({ success: false, message: 'ID de usuario requerido' });
-        }
+        const id = req.user.id; // Obtenemos el ID del token validado
 
-        const usuario = await Usuario.findOne({ _id: id, isActive: true });
+        const usuario = await Usuario.findById(id); // Buscamos por ID directamente
         
-        if (!usuario) {
-            return res.status(404).json({ success: false, message: 'Usuario no encontrado o está inactivo' });
+        if (!usuario || !usuario.isActive) {
+            return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
         }
 
         res.status(200).json({ success: true, usuario });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Error al obtener el perfil', error: error.message });
+        res.status(500).json({ success: false, message: 'Error al obtener perfil', error: error.message });
     }
 };
 
@@ -33,73 +29,26 @@ export const createAccount = async (req, res) => {
 
 export const updateAccount = async (req, res) => {
     try {
-        const { id, ...data } = req.body; 
-
-        if (!id) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Se requiere el ID en el cuerpo de la solicitud para actualizar' 
-            });
-        }
+        const id = req.user.id; // ID del token
+        const data = req.body;  // Solo los campos que quiere actualizar
 
         const usuario = await Usuario.findByIdAndUpdate(id, data, { new: true });
 
-        if (!usuario) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'Usuario no encontrado' 
-            });
-        }
-
-        res.status(200).json({ 
-            success: true, 
-            message: 'Cuenta actualizada exitosamente', 
-            usuario 
-        });
+        res.status(200).json({ success: true, message: 'Cuenta actualizada', usuario });
     } catch (error) {
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error al actualizar', 
-            error: error.message 
-        });
+        res.status(500).json({ success: false, message: 'Error al actualizar', error: error.message });
     }
 };
 
 export const deactivateAccount = async (req, res) => {
     try {
-        const { id } = req.body;
+        const id = req.user.id; // El usuario desactiva SU cuenta
 
-        if (!id) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Se requiere el ID para desactivar la cuenta' 
-            });
-        }
+        const usuario = await Usuario.findByIdAndUpdate(id, { isActive: false }, { new: true });
 
-        const usuario = await Usuario.findByIdAndUpdate(
-            id, 
-            { isActive: false }, 
-            { new: true }
-        );
-
-        if (!usuario) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'Usuario no encontrado' 
-            });
-        }
-
-        res.status(200).json({ 
-            success: true, 
-            message: 'Cuenta desactivada correctamente', 
-            usuario 
-        });
+        res.status(200).json({ success: true, message: 'Cuenta desactivada' });
     } catch (error) {
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error al desactivar', 
-            error: error.message 
-        });
+        res.status(500).json({ success: false, message: 'Error al desactivar', error: error.message });
     }
 };
 

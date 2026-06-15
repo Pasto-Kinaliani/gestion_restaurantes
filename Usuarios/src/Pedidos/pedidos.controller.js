@@ -1,21 +1,29 @@
 import Pedido from './pedidos.model.js';
 import Platillo from '../Platillos/platillos.model.js';
 import Sucursal from '../Sucursal/sucursal.model.js';
+import Venta from '../Ventas/ventas.model.js';
 
-// Crear pedido
 export const createPedido = async (req, res) => {
     try {
-        const { usuario, detalles, sucursal } = req.body;
+        const { usuario, sucursal, detalles, metodoPago } = req.body;
+
+        if (!usuario || !sucursal || !detalles || detalles.length === 0 || !metodoPago) {
+            return res.status(400).json({
+                success: false,
+                message: "Faltan datos requeridos (usuario, sucursal, detalles o metodoPago)"
+            });
+        }
+
         let totalAcumulado = 0;
         const detallesConPrecio = [];
 
         for (const item of detalles) {
             const platilloDB = await Platillo.findById(item.platillo);
 
-            if (!platilloDB || !platilloDB.isActive) {
+            if (!platilloDB) {
                 return res.status(404).json({
                     success: false,
-                    message: `Platillo con ID ${item.platillo} no encontrado o inactivo`
+                    message: `Platillo con ID ${item.platillo} no encontrado`
                 });
             }
 
@@ -24,31 +32,34 @@ export const createPedido = async (req, res) => {
 
             detallesConPrecio.push({
                 platillo: item.platillo,
-                cantidad: item.cantidad,
                 nombre: platilloDB.nombre,
+                cantidad: item.cantidad,
                 subtotal: subtotal
             });
         }
+
+        const totalConIVA = totalAcumulado * 1.12;
 
         const nuevoPedido = new Pedido({
             usuario,
             sucursal,
             detalles: detallesConPrecio,
-            total: totalAcumulado,
-            status: 'PENDIENTE'
+            total: Number(totalConIVA.toFixed(2)),
+            metodoPago,
+            status: "PENDIENTE"
         });
 
         await nuevoPedido.save();
 
         res.status(201).json({
             success: true,
-            message: 'Pedido creado exitosamente',
+            message: "Pedido creado exitosamente",
             pedido: nuevoPedido
         });
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: 'Error al crear pedido',
+            message: "Error al crear pedido",
             error: error.message
         });
     }

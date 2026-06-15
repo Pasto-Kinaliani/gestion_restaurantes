@@ -2,15 +2,30 @@ import Empleado from './empleados.model.js';
 
 export const getEmpleados = async (req, res) => {
     try {
-        // Solo buscamos los que tengan status true
-        const empleados = await Empleado.find({ status: true });
+        const { page = 1, limit = 10, isActive } = req.query;
 
-        console.log("Empleados Activos en DB:", empleados.length);
+        let filter = {};
+
+        if (isActive !== undefined) {
+            filter.isActive = isActive === 'true';
+        }
+
+        const empleados = await Empleado.find(filter)
+            .limit(parseInt(limit))
+            .skip((page - 1) * limit)
+            .sort({ createdAt: -1 });
+
+        const total = await Empleado.countDocuments(filter);
 
         res.status(200).json({
             success: true,
-            total: empleados.length,
-            empleados
+            data: empleados,
+            pagination: {
+                currentPage: Number(page),
+                totalPages: Math.ceil(total / limit),
+                totalRecords: total,
+                limit: Number(limit),
+            },
         });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Error', error });

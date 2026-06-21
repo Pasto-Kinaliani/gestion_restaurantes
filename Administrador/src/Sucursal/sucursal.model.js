@@ -35,6 +35,10 @@ const sucursalSchema = new mongoose.Schema({
         type: String,
         default: 'sucursales/plato_kinaliani_nyvxo5',
     },
+    flat: {
+        type: String,
+        default: 'sucursales/plato_kinaliani_nyvxo5',
+    },
     isActive: {
         type: Boolean,
         default: true,

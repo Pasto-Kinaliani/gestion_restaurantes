@@ -4,8 +4,7 @@ import mongoose, { mongo } from "mongoose";
 
 const pedidoSchema = new mongoose.Schema({
     usuario: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Usuario',
+        type: String,
         required: true
     },
     sucursal: {

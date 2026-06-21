@@ -110,31 +110,24 @@ export const getPedidoById = async (req, res) => {
 
 export const getPedidosByUser = async (req, res) => {
     try {
-        const { uid } = req.params;
+        const { id } = req.params;
 
-        const pedidos = await Pedido.find({ usuario: uid })
+        const pedidos = await Pedido.find({ usuario: id })
             .populate({
                 path: 'sucursal',
-                model: 'Sucursales', // Nombre exacto del export de sucursal
+                model: 'Sucursales',
                 select: 'nombre direccion'
             })
             .populate({
                 path: 'detalles.platillo',
-                model: 'Platillos', // <--- AGREGAMOS LA "S" para que coincida con tu modelo
+                model: 'Platillos',
                 select: 'nombre precio'
             });
-
-        if (pedidos.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: 'Este usuario aún no tiene pedidos registrados'
-            });
-        }
 
         res.status(200).json({
             success: true,
             totalPedidos: pedidos.length,
-            pedidos
+            pedidos: pedidos || []
         });
     } catch (error) {
         res.status(500).json({

@@ -15,7 +15,7 @@ import {
 
 const router = Router();
 
-router.get('/usuario/:uid', getPedidosByUser);
+router.get('/usuario/:id', getPedidosByUser);
 
 // POST
 router.post('/createPedido', createPedidoValidator, createPedido);

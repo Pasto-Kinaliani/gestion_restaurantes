@@ -4,9 +4,7 @@ import { checkValidators } from './check-validators.js';
 export const createPedidoValidator = [
     body('usuario')
         .notEmpty()
-        .withMessage('El usuario es requerido')
-        .isMongoId()
-        .withMessage('Debe ser un ObjectId válido'),
+        .withMessage('El usuario es requerido'),
 
     body('detalles')
         .isArray({ min: 1 })

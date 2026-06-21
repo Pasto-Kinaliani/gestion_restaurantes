@@ -17,6 +17,13 @@ import { uploadSucursalImage } from '../../middlewares/file-uploader.js';
 
 const router = Router();
 
+// Configuración para permitir la carga de múltiples tipos de archivos
+// Define los nombres exactos de los campos que esperarás desde el Frontend/Postman
+const uploadSucursalFiles = uploadSucursalImage.fields([
+    { name: 'photo', maxCount: 1 },
+    { name: 'flat', maxCount: 1 }
+]);
+
 // Rutas GET
 router.get('/', getSucursales);
 router.get('/:id', validateGetSucursalById, getSucursalById);
@@ -25,7 +32,7 @@ router.get('/:id', validateGetSucursalById, getSucursalById);
 router.post(
     '/',
     validateJWT,
-    uploadSucursalImage.single('image'),
+    uploadSucursalFiles, // Reemplazado .single por .fields
     validateCreateSucursal,
     createSucursal
 );
@@ -34,7 +41,7 @@ router.post(
 router.put(
     '/:id',
     validateJWT,
-    uploadSucursalImage.single('image'),
+    uploadSucursalFiles, // Reemplazado .single por .fields
     validateUpdateSucursalRequest,
     updateSucursal
 );

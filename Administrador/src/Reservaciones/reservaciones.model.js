@@ -5,8 +5,18 @@ import mongoose from 'mongoose';
 const reservacionesSchema = new mongoose.Schema({
 
     id_usuario: {
+        type: String,
+        required: true
+    },
+
+    numero_mesa: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Usuario',
+        ref: 'Mesa',
+        required: true
+    }],
+    sucursal: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Sucursales',
         required: true
     },
 
@@ -21,10 +31,6 @@ const reservacionesSchema = new mongoose.Schema({
     },
 
     numero_personas: {
-        type: Number,
-        required: true
-    },
-    numero_mesas: {
         type: Number,
         required: true
     },

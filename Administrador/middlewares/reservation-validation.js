@@ -1,13 +1,15 @@
 import { body, param } from 'express-validator';
 import { checkValidators } from './check-validators.js';
 
-
 // ================= CREATE =================
 export const validateCreateReservation = [
-
     body('id_usuario')
         .notEmpty()
-        .withMessage('El id del usuario es obligatorio')
+        .withMessage('El id del usuario es obligatorio'),
+
+    body('numero_mesa')
+        .notEmpty()
+        .withMessage('El id de la mesa es obligatorio') // 👈 Corregido mensaje
         .isMongoId()
         .withMessage('Debe ser un ObjectId válido'),
 
@@ -30,12 +32,6 @@ export const validateCreateReservation = [
         .isInt({ min: 1 })
         .withMessage('Debe ser un número mayor a 0'),
 
-    body('numero_mesas')
-        .notEmpty()
-        .withMessage('Número de mesas obligatorio')
-        .isInt({ min: 1, max: 10 })
-        .withMessage('Debe ser un número entre 1 y 10'),
-
     body('estado')
         .optional()
         .isIn(['pendiente', 'confirmada', 'cancelada'])
@@ -44,13 +40,12 @@ export const validateCreateReservation = [
     checkValidators,
 ];
 
-
 // ================= UPDATE =================
 export const validateUpdateReservation = [
-
-    param('id')
+    body('numero_mesa')
+        .optional() // 👈 Importante añadir optional para actualizaciones parciales
         .isMongoId()
-        .withMessage('ID debe ser un ObjectId válido'),
+        .withMessage('Debe ser un ObjectId válido'),
 
     body('fecha')
         .optional()
@@ -68,11 +63,6 @@ export const validateUpdateReservation = [
         .isInt({ min: 1 })
         .withMessage('Debe ser un número mayor a 0'),
 
-    body('numero_mesas')
-        .optional()
-        .isInt({ min: 1, max: 10 })
-        .withMessage('Debe ser un número entre 1 y 10'),
-
     body('estado')
         .optional()
         .isIn(['pendiente', 'confirmada', 'cancelada'])
@@ -81,10 +71,8 @@ export const validateUpdateReservation = [
     checkValidators,
 ];
 
-
 // ================= GET BY ID =================
 export const validateGetReservationById = [
-
     param('id')
         .isMongoId()
         .withMessage('ID debe ser un ObjectId válido'),
@@ -92,10 +80,8 @@ export const validateGetReservationById = [
     checkValidators,
 ];
 
-
 // ================= CAMBIAR ESTADO =================
 export const validateReservationStatusChange = [
-
     param('id')
         .isMongoId()
         .withMessage('ID debe ser un ObjectId válido'),

@@ -212,8 +212,8 @@ export const getReservationsByUser = async (req, res) => {
                 // o el servidor debe inferirlo.
             ]
         })
-            .populate('sucursal', 'nombre direccion')
-            .populate('numero_mesa', 'numero capacidad')
+            .populate('sucursal')
+            .populate('numero_mesa')
             .sort({ fecha: -1 });
 
         return res.status(200).json({

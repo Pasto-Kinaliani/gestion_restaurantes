@@ -226,3 +226,51 @@ export const getReservationsByUser = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
+
+export const obtenerMesasOcupadas = async (req, res) => {
+    try {
+        const { sucursal, fecha, hora } = req.query;
+
+        if (!sucursal || !fecha || !hora) {
+            return res.status(400).json({
+                success: false,
+                message: "Faltan parámetros (sucursal, fecha, hora)."
+            });
+        }
+
+        // 1. Buscamos todas las reservas de esa sucursal EN ESA FECHA específica
+        const reservasDelDia = await Reservacion.find({
+            fecha,
+            sucursal,
+            estado: { $in: ['pendiente', 'confirmada'] } // Ignoramos las canceladas
+        });
+
+        const mesasOcupadasIds = [];
+
+        // 2. Convertimos la hora solicitada para calcular el rango de 1 hora
+        const nuevaReservaInicio = new Date(`${fecha}T${hora}:00`);
+        const nuevaReservaFin = new Date(nuevaReservaInicio.getTime() + (60 * 60 * 1000));
+
+        // 3. Revisamos reserva por reserva a ver si choca en el tiempo
+        reservasDelDia.forEach(reserva => {
+            const reservaInicio = new Date(`${reserva.fecha}T${reserva.hora}:00`);
+            const reservaFin = new Date(reservaInicio.getTime() + (60 * 60 * 1000));
+
+            // FÓRMULA DE OVERLAP
+            if (nuevaReservaInicio < reservaFin && nuevaReservaFin > reservaInicio) {
+                // Si la reserva tiene un arreglo de mesas (ej. unió 2 mesas), las agregamos todas
+                reserva.numero_mesa.forEach(idMesa => {
+                    if (!mesasOcupadasIds.includes(idMesa.toString())) {
+                        mesasOcupadasIds.push(idMesa.toString());
+                    }
+                });
+            }
+        });
+
+        // 4. Devolvemos solo el arreglo de IDs que deben pintarse de gris
+        return res.status(200).json({ success: true, ocupadas: mesasOcupadasIds });
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Error al calcular mesas ocupadas", error: error.message });
+    }
+};

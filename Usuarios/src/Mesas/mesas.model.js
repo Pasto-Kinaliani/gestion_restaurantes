@@ -15,11 +15,11 @@ const mesaSchema = Schema({
         ref: 'Sucursales',
         required: [true, 'La sucursal es obligatoria']
     },
-    empleado: {
-        type: Schema.Types.ObjectId,
-        ref: 'Empleado',
-        required: false
-    },
+    // empleado: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Empleado',
+    //     required: false
+    // },
     // 1. ESTADO DE LA MESA (Libre, Ocupada, Reservada)
     estado: {
         type: String,

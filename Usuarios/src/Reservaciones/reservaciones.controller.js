@@ -219,15 +219,7 @@ export const getReservationsByUser = async (req, res) => {
         // 1. Reservas que tengan el ID del usuario (las creadas por el usuario).
         // 2. Reservas que tengan el email asociado al usuario (las creadas por el Admin).
 
-        const reservaciones = await Reservacion.find({
-            $or: [
-                { id_usuario: uidLimpio },
-                { email_cliente: { $exists: true, $ne: null } }
-                // Aquí deberías filtrar por el email específico del usuario logueado.
-                // Si el Admin guarda el email, el frontend debe enviar el email actual
-                // o el servidor debe inferirlo.
-            ]
-        })
+        const reservaciones = await Reservacion.find({ id_usuario: uidLimpio })
             .populate('sucursal')
             .populate('numero_mesa')
             .sort({ fecha: -1 });

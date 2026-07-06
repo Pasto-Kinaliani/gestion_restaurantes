@@ -245,7 +245,7 @@ export const getReservationsByUser = async (req, res) => {
 
 export const obtenerMesasOcupadas = async (req, res) => {
     try {
-        const { sucursal, fecha, hora } = req.query;
+        const { sucursal, fecha, hora, excluir_reservacion_id } = req.query;
 
         if (!sucursal || !fecha || !hora) {
             return res.status(400).json({
@@ -255,11 +255,17 @@ export const obtenerMesasOcupadas = async (req, res) => {
         }
 
         // 1. Buscamos todas las reservas de esa sucursal EN ESA FECHA específica
-        const reservasDelDia = await Reservacion.find({
+        const query = {
             fecha,
             sucursal,
             estado: { $in: ['pendiente', 'confirmada'] } // Ignoramos las canceladas
-        });
+        };
+
+        if (excluir_reservacion_id) {
+            query._id = { $ne: excluir_reservacion_id };
+        }
+
+        const reservasDelDia = await Reservacion.find(query);
 
         const mesasOcupadasIds = [];
 
@@ -269,7 +275,11 @@ export const obtenerMesasOcupadas = async (req, res) => {
 
         // 3. Revisamos reserva por reserva a ver si choca en el tiempo
         reservasDelDia.forEach(reserva => {
-            const reservaInicio = new Date(`${reserva.fecha}T${reserva.hora}:00`);
+            const fechaStr = typeof reserva.fecha === 'object' && reserva.fecha instanceof Date 
+                ? reserva.fecha.toISOString().split('T')[0] 
+                : reserva.fecha;
+            
+            const reservaInicio = new Date(`${fechaStr}T${reserva.hora}:00`);
             const reservaFin = new Date(reservaInicio.getTime() + (60 * 60 * 1000));
 
             // FÓRMULA DE OVERLAP

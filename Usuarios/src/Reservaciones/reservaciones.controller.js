@@ -47,6 +47,22 @@ export const createReservation = async (req, res) => {
             });
         }
 
+        // Add time-based validation
+        const overlappingReservation = await Reservacion.findOne({
+            sucursal,
+            fecha,
+            hora,
+            estado: { $in: ['pendiente', 'confirmada'] },
+            numero_mesa: { $in: mesasAAsignar }
+        });
+
+        if (overlappingReservation) {
+            return res.status(400).json({
+                success: false,
+                message: "No hay disponibilidad para esa fecha, horario y mesa(s) en la sucursal seleccionada."
+            });
+        }
+
         const nuevaReservacion = new Reservacion({
             id_usuario,
             numero_mesa: mesasAAsignar,

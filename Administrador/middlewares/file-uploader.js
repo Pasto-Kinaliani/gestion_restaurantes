@@ -76,3 +76,8 @@ export const uploadSucursalImage = createCloudinaryUploader(
 
 // Export cloudinary instance para usar en delete-file-on-error
 export { cloudinary };
+
+// Uploader para imágenes de eventos
+export const uploadEventosImage = createCloudinaryUploader(
+    process.env.CLOUDINARY_EVENTOS_FOLDER || 'PASTO_KINALIANI/eventos'
+);

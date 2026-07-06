@@ -5,7 +5,7 @@ export const getMesasBySucursal = async (req, res) => {
     try {
         const { idSucursal } = req.params;
         const mesas = await Mesa.find({ sucursal: idSucursal, status: true })
-            .populate('empleado', 'name surname puesto');
+            .populate('sucursal', 'nombre direccion flat');
 
         res.status(200).json({
             success: true,
